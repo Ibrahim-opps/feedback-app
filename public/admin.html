@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ABC Institute — Admin</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Admin — Feedback Manager</h1>
+
+    <div class="card">
+      <div class="toolbar">
+        <button id="refresh">Refresh</button>
+        <button id="export">Export CSV</button>
+      </div>
+      <div id="entries">Loading…</div>
+    </div>
+
+    <p class="muted">This admin is intentionally simple. For production add authentication and rate-limiting.</p>
+  </main>
+  <script>
+    async function fetchAll() {
+      const res = await fetch('/api/feedback');
+      return res.json();
+    }
+    async function render() {
+      const r = await fetchAll();
+      const el = document.getElementById('entries');
+      if (!r.ok) return el.textContent = 'Error loading';
+      if (!r.data.length) return el.textContent = 'No feedback yet.';
+      el.innerHTML = '';
+      r.data.forEach(item => {
+        const d = document.createElement('div');
+        d.className = 'entry';
+        d.innerHTML = `<strong>${item.name}</strong> <small>${item.email}</small>
+          <div class="meta">Rating: ${item.rating} · ${new Date(item.createdAt).toLocaleString()}</div>
+          <p>${item.comments ? item.comments.replace(/\n/g,'<br>') : '<em>No comments</em>'}</p>
+          <div class="entry-actions"><button data-id="${item.id}" class="del">Delete</button></div>`;
+        el.appendChild(d);
+      });
+
+      el.querySelectorAll('.del').forEach(b => b.addEventListener('click', async e => {
+        const id = e.currentTarget.dataset.id;
+        if (!confirm('Delete this feedback?')) return;
+        await fetch('/api/feedback/' + encodeURIComponent(id), { method: 'DELETE' });
+        render();
+      }));
+    }
+
+    document.getElementById('refresh').addEventListener('click', render);
+    document.getElementById('export').addEventListener('click', () => {
+      window.location = '/api/export';
+    });
+
+    render();
+  </script>
+</body>
+</html>

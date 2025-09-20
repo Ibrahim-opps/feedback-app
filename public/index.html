@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ABC Institute — Feedback</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>ABC Institute — Feedback Form</h1>
+
+    <form id="feedbackForm" class="card">
+      <label>Name <input name="name" required /></label>
+      <label>Email <input name="email" type="email" required /></label>
+      <label>Rating
+        <select name="rating" required>
+          <option value="">Choose</option>
+          <option value="5">5 — Excellent</option>
+          <option value="4">4 — Very good</option>
+          <option value="3">3 — Good</option>
+          <option value="2">2 — Fair</option>
+          <option value="1">1 — Poor</option>
+        </select>
+      </label>
+      <label>Comments
+        <textarea name="comments" rows="5" placeholder="Your comments... (optional)"></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="submit">Send Feedback</button>
+        <button id="clearLocal" type="button">Clear local preview</button>
+      </div>
+    </form>
+
+    <section class="card" id="preview">
+      <h2>Recent feedback (local preview)</h2>
+      <div id="list">Loading…</div>
+    </section>
+
+    <p class="muted">Admin? Open <a href="/admin.html">admin panel</a>.</p>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>
